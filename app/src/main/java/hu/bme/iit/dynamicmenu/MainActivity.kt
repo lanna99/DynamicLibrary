@@ -50,22 +50,23 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        // Kiválasztott menüelemre listener
         navView.setNavigationItemSelectedListener {
             menuItem ->
                 when(menuItem.itemId) {
                     R.id.nav_home -> {
                         homeClickCounter++
-                        changeNavMenuItems(R.id.nav_home)
+                        changeNavMenuItems()
                         drawerLayout.closeDrawers()
                     }
                     R.id.nav_gallery -> {
                         galleryClickCounter++
-                        changeNavMenuItems(R.id.nav_gallery)
+                        changeNavMenuItems()
                         drawerLayout.closeDrawers()
                     }
                     R.id.nav_item -> {
                         itemClickCounter++
-                        changeNavMenuItems(R.id.nav_item)
+                        changeNavMenuItems()
                         drawerLayout.closeDrawers()
                     }
                 }
@@ -90,11 +91,13 @@ class MainActivity : AppCompatActivity() {
         this.title = html.parseAsHtml()
     }
 
+    /*
     @RequiresApi(Build.VERSION_CODES.O)
     private fun changeNavMenuItems(id: Int) {
         val navView: NavigationView = binding.navView
         val navMenu: Menu = navView.menu
         var counter: Int = 0
+
         when (id) {
             R.id.nav_home -> {
                 counter = homeClickCounter
@@ -106,7 +109,52 @@ class MainActivity : AppCompatActivity() {
                 counter = itemClickCounter
             }
         }
+
         navMenu.findItem(id).setTitleColor(Color.valueOf(counter * 0.1f, 0.0f, 0.0f).toArgb())
+    }*/
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun changeNavMenuItems() {
+        val navView: NavigationView = binding.navView
+        val navMenu: Menu = navView.menu
+
+        val counterList = listOf(homeClickCounter, galleryClickCounter, itemClickCounter)
+        when (counterList.maxOrNull()) {
+            homeClickCounter -> {
+                navMenu.findItem(R.id.nav_home).setTitleColor(Color.RED)
+                navMenu.findItem(R.id.nav_gallery)
+                    .setTitleColor(Color.valueOf((galleryClickCounter.toFloat() / homeClickCounter) * 1.0f,
+                        0.0f,
+                        0.0f).toArgb())
+                navMenu.findItem(R.id.nav_item)
+                    .setTitleColor(Color.valueOf((itemClickCounter.toFloat() / homeClickCounter) * 1.0f,
+                        0.0f,
+                        0.0f).toArgb())
+            }
+            galleryClickCounter -> {
+                navMenu.findItem(R.id.nav_gallery).setTitleColor(Color.RED)
+                navMenu.findItem(R.id.nav_home)
+                    .setTitleColor(Color.valueOf((homeClickCounter.toFloat() / galleryClickCounter) * 1.0f,
+                        0.0f,
+                        0.0f).toArgb())
+                navMenu.findItem(R.id.nav_item)
+                    .setTitleColor(Color.valueOf((itemClickCounter.toFloat() / galleryClickCounter) * 1.0f,
+                        0.0f,
+                        0.0f).toArgb())
+            }
+            itemClickCounter -> {
+                navMenu.findItem(R.id.nav_item).setTitleColor(Color.RED)
+                navMenu.findItem(R.id.nav_home)
+                    .setTitleColor(Color.valueOf((homeClickCounter.toFloat() / itemClickCounter) * 1.0f,
+                        0.0f,
+                        0.0f).toArgb())
+                navMenu.findItem(R.id.nav_gallery)
+                    .setTitleColor(Color.valueOf((galleryClickCounter.toFloat() / itemClickCounter) * 1.0f,
+                        0.0f,
+                        0.0f).toArgb())
+            }
+        }
+
     }
 
 }
