@@ -85,6 +85,7 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    // Megváltoztatja az adott nav menü elem title színét
     fun MenuItem.setTitleColor(color: Int) {
         val hexColor = Integer.toHexString(color).uppercase(Locale.getDefault()).substring(2)
         val html = "<font color='#$hexColor'>$title</font>"
@@ -92,6 +93,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /*
+    // Nem függnek egymástól az elemek, de egyre pirosabbak lesznek 10 kattintásig
     @RequiresApi(Build.VERSION_CODES.O)
     private fun changeNavMenuItems(id: Int) {
         val navView: NavigationView = binding.navView
@@ -113,6 +115,7 @@ class MainActivity : AppCompatActivity() {
         navMenu.findItem(id).setTitleColor(Color.valueOf(counter * 0.1f, 0.0f, 0.0f).toArgb())
     }*/
 
+    // Egymástól függően egyre pirosabbak a gyakran használt elemek (csúnya megoldás)
     @RequiresApi(Build.VERSION_CODES.O)
     private fun changeNavMenuItems() {
         val navView: NavigationView = binding.navView
