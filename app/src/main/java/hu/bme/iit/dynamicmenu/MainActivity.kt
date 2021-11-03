@@ -1,12 +1,12 @@
 package hu.bme.iit.dynamicmenu
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.RequiresApi
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -18,12 +18,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.parseAsHtml
 import hu.bme.iit.dynamicmenu.databinding.ActivityMainBinding
 import java.util.*
+import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
 
-    private var homeClickCounter = 0
-    private var galleryClickCounter = 0
-    private var itemClickCounter = 0
+    private var clicksMap: HashMap<Int, Int> = hashMapOf(R.id.nav_home to 0,
+                                                         R.id.nav_gallery to 0,
+                                                         R.id.nav_item to 0)
+
+    private var maxClickValue: Int = 0
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
@@ -55,18 +58,18 @@ class MainActivity : AppCompatActivity() {
             menuItem ->
                 when(menuItem.itemId) {
                     R.id.nav_home -> {
-                        homeClickCounter++
-                        changeNavMenuItems()
+                        clicksMap.computeIfPresent(R.id.nav_home) { _, v -> v + 1 }
+                        changeNavMenuItemsColor()
                         drawerLayout.closeDrawers()
                     }
                     R.id.nav_gallery -> {
-                        galleryClickCounter++
-                        changeNavMenuItems()
+                        clicksMap.computeIfPresent(R.id.nav_gallery) { _, v -> v + 1 }
+                        changeNavMenuItemsColor()
                         drawerLayout.closeDrawers()
                     }
                     R.id.nav_item -> {
-                        itemClickCounter++
-                        changeNavMenuItems()
+                        clicksMap.computeIfPresent(R.id.nav_item) { _, v -> v + 1 }
+                        changeNavMenuItemsColor()
                         drawerLayout.closeDrawers()
                     }
                 }
@@ -92,72 +95,27 @@ class MainActivity : AppCompatActivity() {
         this.title = html.parseAsHtml()
     }
 
-    /*
-    // Nem függnek egymástól az elemek, de egyre pirosabbak lesznek 10 kattintásig
+    // Kiszámolja minden navMenu elemre, hogy mennyire legyen piros.
+    // A függvény paraméterben megkapja a legtöbb kattintást, ez alapján számol.
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun changeNavMenuItems(id: Int) {
+    private fun calculateColors(maxClickValue: Int) {
         val navView: NavigationView = binding.navView
         val navMenu: Menu = navView.menu
-        var counter: Int = 0
-
-        when (id) {
-            R.id.nav_home -> {
-                counter = homeClickCounter
-            }
-            R.id.nav_gallery -> {
-                counter = galleryClickCounter
-            }
-            R.id.nav_item -> {
-                counter = itemClickCounter
-            }
+        clicksMap.forEach {
+                (key, value) ->
+            navMenu.findItem(key)
+                .setTitleColor(Color.valueOf((value.toFloat() / maxClickValue) * 1.0f,
+                                             0.0f,
+                                             0.0f).toArgb())
         }
-
-        navMenu.findItem(id).setTitleColor(Color.valueOf(counter * 0.1f, 0.0f, 0.0f).toArgb())
-    }*/
+    }
 
     // Egymástól függően egyre pirosabbak a gyakran használt elemek (csúnya megoldás)
+    @SuppressLint("ResourceType")
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun changeNavMenuItems() {
-        val navView: NavigationView = binding.navView
-        val navMenu: Menu = navView.menu
-
-        val counterList = listOf(homeClickCounter, galleryClickCounter, itemClickCounter)
-        when (counterList.maxOrNull()) {
-            homeClickCounter -> {
-                navMenu.findItem(R.id.nav_home).setTitleColor(Color.RED)
-                navMenu.findItem(R.id.nav_gallery)
-                    .setTitleColor(Color.valueOf((galleryClickCounter.toFloat() / homeClickCounter) * 1.0f,
-                        0.0f,
-                        0.0f).toArgb())
-                navMenu.findItem(R.id.nav_item)
-                    .setTitleColor(Color.valueOf((itemClickCounter.toFloat() / homeClickCounter) * 1.0f,
-                        0.0f,
-                        0.0f).toArgb())
-            }
-            galleryClickCounter -> {
-                navMenu.findItem(R.id.nav_gallery).setTitleColor(Color.RED)
-                navMenu.findItem(R.id.nav_home)
-                    .setTitleColor(Color.valueOf((homeClickCounter.toFloat() / galleryClickCounter) * 1.0f,
-                        0.0f,
-                        0.0f).toArgb())
-                navMenu.findItem(R.id.nav_item)
-                    .setTitleColor(Color.valueOf((itemClickCounter.toFloat() / galleryClickCounter) * 1.0f,
-                        0.0f,
-                        0.0f).toArgb())
-            }
-            itemClickCounter -> {
-                navMenu.findItem(R.id.nav_item).setTitleColor(Color.RED)
-                navMenu.findItem(R.id.nav_home)
-                    .setTitleColor(Color.valueOf((homeClickCounter.toFloat() / itemClickCounter) * 1.0f,
-                        0.0f,
-                        0.0f).toArgb())
-                navMenu.findItem(R.id.nav_gallery)
-                    .setTitleColor(Color.valueOf((galleryClickCounter.toFloat() / itemClickCounter) * 1.0f,
-                        0.0f,
-                        0.0f).toArgb())
-            }
-        }
-
+    private fun changeNavMenuItemsColor() {
+        maxClickValue = clicksMap.maxByOrNull { it.value }?.value!!
+        calculateColors(maxClickValue)
     }
 
 }
