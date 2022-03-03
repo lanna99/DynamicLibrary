@@ -6,18 +6,18 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_home"
             android:orderInCategory="1"
+            android:icon="@drawable/ic_menu_home"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
             android:orderInCategory="2"
+            android:icon="@drawable/ic_menu_gallery"
             android:title="@string/menu_gallery" />
         <item
             android:id="@+id/nav_item"
-            android:icon="@drawable/ic_menu_item"
             android:orderInCategory="3"
+            android:icon="@drawable/ic_menu_item"
             android:title="Item" />
     </group>
 </menu>

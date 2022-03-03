@@ -58,16 +58,19 @@ class MainActivity : AppCompatActivity() {
                     R.id.nav_home -> {
                         function.clicksMap.computeIfPresent(R.id.nav_home) { _, v -> v + 1 }
                         function.changeMenuItemsColor(navMenu)
+                        function.changeTextSize(navMenu)
                         drawerLayout.closeDrawers()
                     }
                     R.id.nav_gallery -> {
                         function.clicksMap.computeIfPresent(R.id.nav_gallery) { _, v -> v + 1 }
                         function.changeMenuItemsColor(navMenu)
+                        function.changeTextSize(navMenu)
                         drawerLayout.closeDrawers()
                     }
                     R.id.nav_item -> {
                         function.clicksMap.computeIfPresent(R.id.nav_item) { _, v -> v + 1 }
                         function.changeMenuItemsColor(navMenu)
+                        function.changeTextSize(navMenu)
                         drawerLayout.closeDrawers()
                     }
                 }
