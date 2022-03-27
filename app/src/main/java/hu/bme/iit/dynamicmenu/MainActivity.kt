@@ -14,8 +14,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import hu.bme.iit.dynamicmenu.databinding.ActivityMainBinding
-import hu.bme.iit.dynamicmenu.ui.dynamic.DynamicRedFunction
-import kotlin.collections.HashMap
+import hu.bme.iit.dynamicmenu.ui.dynamic.DynamicFunction
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
         val navMenu: Menu = navView.menu
 
-        val function = DynamicRedFunction(navMenu)
+        val function = DynamicFunction(navMenu)
         Log.i(null, "FUNCTION")
 
         // Kiválasztott menüelemre listener
