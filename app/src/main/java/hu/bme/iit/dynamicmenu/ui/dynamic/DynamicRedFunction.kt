@@ -2,12 +2,9 @@ package hu.bme.iit.dynamicmenu.ui.dynamic
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.PorterDuff
 import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.SpannedString
 import android.text.style.RelativeSizeSpan
 import android.view.Menu
 import android.view.MenuItem
