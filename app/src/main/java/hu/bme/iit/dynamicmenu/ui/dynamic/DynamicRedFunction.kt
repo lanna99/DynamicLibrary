@@ -6,16 +6,31 @@ import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.RelativeSizeSpan
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.RequiresApi
 import androidx.core.text.parseAsHtml
+import androidx.core.view.forEachIndexed
+import hu.bme.iit.dynamicmenu.R
 import java.util.*
 import kotlin.collections.HashMap
 
-class DynamicRedFunction(map: HashMap<Int, Int>) {
-    var clicksMap: HashMap<Int, Int> = map
+class DynamicRedFunction(menu: Menu) {
+    private var map: HashMap<Int, Int> = hashMapOf() // key: menu item id, value: click count
     private var maxClickValue: Int = 0
+
+    // Az adott menühöz tartozó összes menu elemet megkeresi és feltölti
+    // az id-jával, mint key és hozzá tartozó 0 értékkel, amely a kattinstásszám értéke.
+    private fun getHashMap(menu: Menu): HashMap<Int, Int> {
+        menu.forEachIndexed { index, item ->
+            map[item.itemId] = 0
+        }
+        Log.i(null, "HASHMAAP")
+        return map
+    }
+
+    var clicksMap = getHashMap(menu)
 
     // Megváltoztatja az adott menüelem title színét
     private fun MenuItem.setTitleColor(color: Int) {
@@ -42,6 +57,7 @@ class DynamicRedFunction(map: HashMap<Int, Int>) {
     @RequiresApi(Build.VERSION_CODES.O)
     fun changeMenuItemsColor(menu: Menu) {
         maxClickValue = clicksMap.maxByOrNull { it.value }?.value!!
+        Log.i(null, maxClickValue.toString())
         calculateColors(menu, maxClickValue)
     }
 

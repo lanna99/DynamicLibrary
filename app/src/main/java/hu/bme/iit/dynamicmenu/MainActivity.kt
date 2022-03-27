@@ -2,6 +2,7 @@ package hu.bme.iit.dynamicmenu
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import androidx.annotation.RequiresApi
 import com.google.android.material.navigation.NavigationView
@@ -17,12 +18,6 @@ import hu.bme.iit.dynamicmenu.ui.dynamic.DynamicRedFunction
 import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
-
-    private var clicksMap: HashMap<Int, Int> = hashMapOf(R.id.nav_home to 0,
-                                                         R.id.nav_gallery to 0,
-                                                         R.id.nav_item to 0)
-
-    private var function = DynamicRedFunction(clicksMap)
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
@@ -50,6 +45,9 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
         val navMenu: Menu = navView.menu
+
+        val function = DynamicRedFunction(navMenu)
+        Log.i(null, "FUNCTION")
 
         // Kiválasztott menüelemre listener
         navView.setNavigationItemSelectedListener {
