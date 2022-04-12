@@ -6,6 +6,7 @@ import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.RelativeSizeSpan
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.RequiresApi
@@ -15,14 +16,26 @@ import hu.bme.iit.dynamicmenu.R
 import java.util.*
 import kotlin.collections.HashMap
 
-class DynamicRedFunction(map: HashMap<Int, Int>) {
-    var clicksMap: HashMap<Int, Int> = map
+class DynamicFunction(menu: Menu) {
+    private var map: HashMap<Int, Int> = hashMapOf() // key: menu item id, value: click count
     private var maxClickValue: Int = 0
+
+    // Az adott menühöz tartozó összes menüelemet megkeresi és feltölti
+    // az id-jával, mint key és hozzá tartozó 0 value-val, amely a kattintásszám értéke.
+    private fun getHashMap(menu: Menu): HashMap<Int, Int> {
+        menu.forEachIndexed { index, item ->
+            map[item.itemId] = 0
+        }
+        Log.i(null, "HASHMAAP")
+        return map
+    }
+
+    var clicksMap = getHashMap(menu)    // a létrehozott HashMap az adott menühöz tartozó menüelemek azonosítójából és 0 értékű kattintásszámukból
 
     // Megváltoztatja az adott menüelem title színét
     private fun MenuItem.setTitleColor(color: Int) {
         val hexColor = Integer.toHexString(color).uppercase(Locale.getDefault()).substring(2)
-        val html = "<font color='#$hexColor'>$title</font>" //<icon color='#$hexColor'>$icon</icon>"
+        val html = "<font color='#$hexColor'>$title</font>" // <icon color='#$hexColor'>$icon</icon>"
         this.title = html.parseAsHtml()
     }
 
@@ -39,11 +52,12 @@ class DynamicRedFunction(map: HashMap<Int, Int>) {
         }
     }
 
-    // Egymástól függően egyre pirosabbak a gyakran használt elemek
+    // Egymástól függően egyre pirosabbak a gyakran használt elemek.
     @SuppressLint("ResourceType")
     @RequiresApi(Build.VERSION_CODES.O)
     fun changeMenuItemsColor(menu: Menu) {
         maxClickValue = clicksMap.maxByOrNull { it.value }?.value!!
+        Log.i(null, maxClickValue.toString())
         calculateColors(menu, maxClickValue)
     }
 
@@ -59,12 +73,17 @@ class DynamicRedFunction(map: HashMap<Int, Int>) {
         }
     }
 
+    // A menüelem title size-át változtatja.
+    // Kotlinban van egy bug, hogy saját style-t kell készíteni a betűméret változtatásához,
+    // így ezt a funkciót nem éri el a függvényem, mivel ez csak az XML-ben lévő size-t tudná módosítani.
     private fun MenuItem.setTitleSize(size: Float) {
-        val spanString: SpannableString = SpannableString(title.toString())
+        val spanString = SpannableString(title.toString())
         val end: Int = spanString.length
         spanString.setSpan(RelativeSizeSpan(size), 0, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
+    // A menüelem title size-át számolja ki.
+    // Bizonyos határokon belül kell lennie, hogy normálisan nézzen ki az alkalmazásban.
     private fun calculateTextSizes(menu: Menu, maxClickValue: Int) {
         clicksMap.forEach {
                 (key, value) ->
@@ -72,6 +91,7 @@ class DynamicRedFunction(map: HashMap<Int, Int>) {
         }
     }
 
+    // A betűméreteket használatarányosan változtatja a számolt értékek szerint.
     fun changeTextSize(menu: Menu) {
         maxClickValue = clicksMap.maxByOrNull { it.value }?.value!!
         calculateTextSizes(menu, maxClickValue)
