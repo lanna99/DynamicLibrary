@@ -10,6 +10,8 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.RequiresApi
 import androidx.core.text.parseAsHtml
+import androidx.core.view.forEachIndexed
+import hu.bme.iit.dynamicmenu.R
 import java.util.*
 import kotlin.collections.HashMap
 
