@@ -23,10 +23,9 @@ class DynamicFunction(menu: Menu) {
     // Az adott menühöz tartozó összes menüelemet megkeresi és feltölti
     // az id-jával, mint key és hozzá tartozó 0 value-val, amely a kattintásszám értéke.
     private fun getHashMap(menu: Menu): HashMap<Int, Int> {
-        menu.forEachIndexed { index, item ->
-            map[item.itemId] = 0
+        menu.forEachIndexed {
+                index, item -> map[item.itemId] = 0
         }
-        Log.i(null, "HASHMAAP")
         return map
     }
 
@@ -61,24 +60,28 @@ class DynamicFunction(menu: Menu) {
         calculateColors(menu, maxClickValue)
     }
 
-    // LinkedHashMap tartja a sorrendet is, a sima HashMap nem!!
-    // TODO: próbálkozás az activity_main_drawer.xml itemjeinek orderInCategory-jával
+    // A sorrendjét módosítja a menüelemeknek.
     fun changeOrders(menu: Menu) {
         val sortedClicksMap = clicksMap.toSortedMap(compareByDescending { it })
         sortedClicksMap.forEach {
                 (key, _) ->
+            menu.removeItem(menu.findItem(key).itemId)
             menu.add(menu.findItem(key).itemId)
             //menu.add(Menu.NONE, menu.findItem(key).itemId, clicksMap[menu.findItem(key)].and(1), menu.findItem(key).title)
-            menu.removeItem(menu.findItem(key).itemId)
         }
     }
 
-    // A menüelem title size-át változtatja.
+    // A menüelem title size-át változtatja. Java példakód szerint írtam, Java-ban valószínűleg működne is.
     // Kotlinban van egy bug, hogy saját style-t kell készíteni a betűméret változtatásához,
     // így ezt a funkciót nem éri el a függvényem, mivel ez csak az XML-ben lévő size-t tudná módosítani.
     private fun MenuItem.setTitleSize(size: Float) {
+        val minSize = 0.4f
         val spanString = SpannableString(title.toString())
         val end: Int = spanString.length
+        // Ha túl kicsi lenne a betűméret, ami már olvashatatlan, akkor az alá nem csökkenti.
+        if (size < minSize) {
+            spanString.setSpan(RelativeSizeSpan(minSize), 0, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
         spanString.setSpan(RelativeSizeSpan(size), 0, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
