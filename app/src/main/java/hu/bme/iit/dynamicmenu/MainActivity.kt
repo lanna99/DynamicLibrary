@@ -13,8 +13,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.example.dynamic.DynamicFunction
 import hu.bme.iit.dynamicmenu.databinding.ActivityMainBinding
-import hu.bme.iit.dynamicmenu.ui.dynamic.DynamicFunction
 
 class MainActivity : AppCompatActivity() {
 
